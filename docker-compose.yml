@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  nest-api:
+    container_name: arutmin-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    volumes:
+      - ./public/images:/app/public/images
+      - ./prisma:/app/prisma
+      - ./dist:/app/dist
+      
+  postgres:
+    image: postgres:alpine3.19
+    container_name: arutmin-db
+    restart: always
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    volumes:
+      - postgres_dev:/var/lib/postgresql/data
+      - ./arutmin-database.sql:/docker-entrypoint-initdb.d/arutmin-database.sql
+
+volumes:
+  postgres_dev:
+    name: arutmin-app
